@@ -3,12 +3,27 @@ require('dotenv').config();
 const express     = require('express');
 const bodyParser  = require('body-parser');
 const cors        = require('cors');
-
+const helmet      = require('helmet');
+const mongoose    = require('mongoose')
 const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
 const runner            = require('./test-runner');
 
 const app = express();
+
+const uri = "mongodb+srv://xaqep:ULWjI7AtBkLhUwJG@cluster0.4fgbntm.mongodb.net/?retryWrites=true&w=majority";
+
+mongoose.connect(uri);
+mongoose.connection.once('open', () => {
+  console.log('Connected to DB')
+})
+
+
+app.use(helmet({
+  xFrameOptions: {action: "same-origin" },
+  xDnsPrefetchControl: { allow: false },
+  referrerPolicy: {policy: "same-origin"},
+}));
 
 app.use('/public', express.static(process.cwd() + '/public'));
 
